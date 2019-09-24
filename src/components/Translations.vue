@@ -17,7 +17,7 @@
         </textarea-autosize>
       </div>
       <div class="target">
-        <textarea-autosize :min-height="150" :max-height="1000" v-model="translatedText" :placeholder="loading ? '' : 'Translated text will appear here'" disabled>
+        <textarea-autosize :min-height="150" :max-height="1000" v-model="translatedText" :placeholder="loading ? '' : 'Translated text will appear here'" readonly>
         </textarea-autosize>
       </div>
       <div class="spinner-container" v-if="loading">
