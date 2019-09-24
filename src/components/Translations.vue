@@ -62,6 +62,7 @@ export default {
     translate: _.debounce(function() {
       if(this.sourceText == '') {
         this.translatedText = ''
+        this.loading = false
         return;
       }
       
