@@ -81,7 +81,7 @@ export default {
       
       this.loading = true;
 
-      axios.post(process.env.VUE_APP_API_PATH + '/api/translate', {text: this.sourceText, sl: this.$route.sl, tl: this.$route.tl }).then((response) => {
+      axios.post(process.env.VUE_APP_API_PATH + '/api/translate', {text: this.sourceText, sl: this.$route.query.sl, tl: this.$route.query.tl }).then((response) => {
         this.loading = false;
         this.translatedText = response.data.translation;
       });
