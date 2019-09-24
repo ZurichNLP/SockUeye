@@ -28,7 +28,8 @@
 </template>
 
 <script>
-import _ from 'lodash';
+import _ from 'lodash'
+import axios from 'axios'
 import Spinner from './Spinner'
 import LanguageSelector from './LanguageSelector'
 import LanguageService from '@/services/language-service'
@@ -59,12 +60,17 @@ export default {
   },
   methods: {
     translate: _.debounce(function() {
-      // Api call here
+      if(this.sourceText == '') {
+        this.translatedText = ''
+        return;
+      }
+      
       this.loading = true;
-      window.setTimeout(() => {
+
+      axios.post(process.env.VUE_APP_API_PATH + '/api/translate', {text: this.sourceText}).then((response) => {
         this.loading = false;
-        this.translatedText = this.sourceText + ' ' + this.sourceText;
-      }, 500);
+        this.translatedText = response.data.translation;
+      });
 
     }, 500),
     switchLang() {
