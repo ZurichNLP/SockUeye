@@ -38,14 +38,23 @@ export default {
   name: 'Translations',
   props: {},
   watch: {
-    sourceText: function() {
+    sourceText() {
       this.loading = true;
+      this.translation_needed()
+    },
+    sourceLang() {
+      this.translation_needed()
+    },
+    targetLang() {
+      this.translation_needed()
+    },
+    '$route' () {
       this.translate()
     }
   },
   data() {
     return {
-      sourceText: this.$route.query.text ? this.$route.query.text : '',
+      sourceText: '',
       translatedText: "",
       loading: false,
       languages: null,
@@ -53,17 +62,18 @@ export default {
       targetLang: null
     }
   },
-  computed: {
-  },
   async mounted() {
     this.languages = await LanguageService.getLanguages()
-    if(this.sourceText != '') this.translate();
+    this.translate()
   },
   methods: {
-    translate: _.debounce(function() {
+    translation_needed: _.debounce(function() {
       this.$router.push({ path: '/', query: { text: this.sourceText, sl: this.sourceLang.key, tl: this.targetLang.key } })
-
-      if(this.sourceText == '') {
+    }, 500),
+    translate() {
+      this.sourceText = this.$route.query.text;
+      
+      if(!this.sourceText) {
         this.translatedText = ''
         this.loading = false
         return;
@@ -71,12 +81,11 @@ export default {
       
       this.loading = true;
 
-      axios.post(process.env.VUE_APP_API_PATH + '/api/translate', {text: this.sourceText}).then((response) => {
+      axios.post(process.env.VUE_APP_API_PATH + '/api/translate', {text: this.sourceText, sl: this.$route.sl, tl: this.$route.tl }).then((response) => {
         this.loading = false;
         this.translatedText = response.data.translation;
       });
-
-    }, 500),
+    },
     switchLang() {
       // Todo: allow switch only under certain conditions
       this.sourceLang = this.targetLang
