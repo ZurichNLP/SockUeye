@@ -1,11 +1,14 @@
 <template>
   <div class="translations">
-    <div class="langbar">
+    <div class="langbar" v-if="languages">
       <div class="langbar-source">
-        <language-selector :languages="languages" />
+        <language-selector v-model="sourceLang" :languages="languages" />
+      </div>
+      <div class="switch" @click="switchLang">
+        <font-awesome-icon icon="exchange-alt" />
       </div>
       <div class="langbar-target">
-        <language-selector :languages="languages" />
+        <language-selector v-model="targetLang" v-if="sourceLang" :languages="sourceLang.targets" />
       </div>
     </div>
     <div class="text-inputs">
@@ -28,6 +31,7 @@
 import _ from 'lodash';
 import Spinner from './Spinner'
 import LanguageSelector from './LanguageSelector'
+import LanguageService from '@/services/language-service'
 
 export default {
   name: 'Translations',
@@ -43,21 +47,15 @@ export default {
       sourceText: "",
       translatedText: "",
       loading: false,
-      languages: [
-        {
-          key: 'en',
-          text: 'English'
-        },
-        {
-          key: 'de',
-          text: 'German'
-        },
-        {
-          key: 'it',
-          text: 'Italian'
-        }
-      ]
+      languages: null,
+      sourceLang: null,
+      targetLang: null
     }
+  },
+  computed: {
+  },
+  async mounted() {
+    this.languages = await LanguageService.getLanguages()
   },
   methods: {
     translate: _.debounce(function() {
@@ -68,7 +66,11 @@ export default {
         this.translatedText = this.sourceText + ' ' + this.sourceText;
       }, 500);
 
-    }, 500)
+    }, 500),
+    switchLang() {
+      // Todo: allow switch only under certain conditions
+      this.sourceLang = this.targetLang
+    }
   },
   components: {
     Spinner,
@@ -106,6 +108,8 @@ textarea {
 
 .spinner-container { position:absolute; left:75%; margin-left:-32px; top:50%; margin-top:-32px; bottom:0; right:0; }
 
-.langbar { width:100%; display:flex; }
-.langbar > div { width:50%; }
+.langbar { width:100%; display:flex; position:relative; background:#FAFAFA; }
+.langbar-source, .langbar-target { width:50%; }
+.langbar-target { padding-left:20px; }
+.switch { position: absolute; width:20px; left:50%; margin-left:-10px; top:10px; z-index:1; color:#7A7A7A; cursor:pointer; }
 </style>

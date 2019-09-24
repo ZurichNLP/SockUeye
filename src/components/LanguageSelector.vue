@@ -1,6 +1,6 @@
 <template>
-    <b-dropdown v-bind:value="value" id="lang" :text="selectedLanguage.text" class="m-md-2">
-        <b-dropdown-item :active="l == selectedLanguage" @click="select(l)" v-for="l in languages" v-bind:key="l.key">{{l.text}}</b-dropdown-item>
+    <b-dropdown id="lang" :text="value ? value.name : 'Select language'" class="m-md-2">
+        <b-dropdown-item :active="l == value" @click="select(l)" v-for="l in languages" v-bind:key="l.key">{{l.name}}</b-dropdown-item>
     </b-dropdown>
 </template>
 
@@ -9,14 +9,24 @@ export default {
   name: 'LanguageSelector',
   props: ['value', 'languages'],
   data() {
-    return {
-      selectedLanguage: this.value ? this.value : this.languages[0]
+    return {}
+  },
+  watch: {
+    languages: function() {
+      this.init()
     }
+  },
+  mounted() {
+    this.init()
   },
   methods: {
     select(l) {
-      this.selectedLanguage = l;
-      this.$emit('input', l.value)
+      this.$emit('input', l)
+    },
+    init() {
+      if(this.languages.indexOf(this.value) != -1)
+        return;
+      this.$emit('input', this.languages[0])
     }
   },
   components: {

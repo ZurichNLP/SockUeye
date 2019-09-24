@@ -1,18 +1,22 @@
 <template>
-  <div class="container-fluid">
-    <h1>Demo for neural machine translation</h1>
-    <Translations msg="Welcome to Your Vue.js App"/>
+  <div>
+    <NavBar />
+    <div class="container-fluid">
+      <Translations />
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import Translations from '@/components/Translations.vue'
+import NavBar from '@/components/NavBar.vue'
 
 export default {
   name: 'home',
   components: {
-    Translations
+    Translations,
+    NavBar
   }
 }
 </script>

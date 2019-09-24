@@ -12,6 +12,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import TextareaAutosize from 'vue-textarea-autosize'
 Vue.use(TextareaAutosize)
 
+// Configure FontAwesome icons
+import configureIcons from './icons-fontawesome'
+configureIcons(Vue)
+
 Vue.config.productionTip = false
 
 new Vue({
