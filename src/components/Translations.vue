@@ -45,7 +45,7 @@ export default {
   },
   data() {
     return {
-      sourceText: "",
+      sourceText: this.$route.query.text ? this.$route.query.text : '',
       translatedText: "",
       loading: false,
       languages: null,
@@ -57,9 +57,12 @@ export default {
   },
   async mounted() {
     this.languages = await LanguageService.getLanguages()
+    if(this.sourceText != '') this.translate();
   },
   methods: {
     translate: _.debounce(function() {
+      this.$router.push({ path: '/', query: { text: this.sourceText, sl: this.sourceLang.key, tl: this.targetLang.key } })
+
       if(this.sourceText == '') {
         this.translatedText = ''
         this.loading = false
